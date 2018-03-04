@@ -1,0 +1,134 @@
+﻿<Window x:Class="KinectTracker.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                
+        xmlns:local="clr-namespace:KinectTracker"
+        mc:Ignorable="d"
+        Title="Kinect Tracker" Height="600" Width="1000"  Loaded="Window_Loaded" Closed="Window_Closed"> 
+    <Grid>
+        <TabControl Margin="10" BorderBrush="Gainsboro" SelectionChanged="TabControl_SelectionChanged">
+            <TabControl.Resources>
+                <Style TargetType="TabItem">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="TabItem">
+                                <Border Name="Border" BorderThickness="1,1,1,0" BorderBrush="Gainsboro" CornerRadius="4,4,0,0" Margin="2,0">
+                                    <ContentPresenter x:Name="ContentSite"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Center"
+                                        ContentSource="Header"
+                                        Margin="10,2"/>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter TargetName="Border" Property="Background" Value="LightSkyBlue" />
+                                    </Trigger>
+                                    <Trigger Property="IsSelected" Value="False">
+                                        <Setter TargetName="Border" Property="Background" Value="GhostWhite" />
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </TabControl.Resources>
+            <TabItem Header="Camera">
+                <Grid>
+                    <Image Name="camera" Stretch="Fill"/> 
+                    <Grid Style="{StaticResource GridButtonsStyle}">
+                        <StackPanel Style="{StaticResource StackPanelButtonsStyle}">
+                            <Button Content="Color" Style="{StaticResource ButtonStyle}" Click="Color_Click" />
+                            <Button Content="Depth" Style="{StaticResource ButtonStyle}" Click="Depth_Click" />
+                            <Button Content="Infrared" Style="{StaticResource ButtonStyle}" Click="Infrared_Click" />
+                        </StackPanel>
+                    </Grid>
+                    <!--<Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="4*" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Border HorizontalAlignment="Left"  Grid.Column="0" Grid.Row="0" VerticalAlignment="Top" BorderBrush="DarkCyan" BorderThickness="1">
+                        <Grid  Background="#FFF2F2F2" VerticalAlignment="Stretch">                      
+                        <Image Name="camera" Stretch="Fill" />
+                        </Grid>
+                    </Border>
+
+                    <Border Grid.Column="1" Grid.Row="0"  VerticalAlignment="Stretch" Opacity=".7"  BorderBrush="DarkCyan" BorderThickness="1">
+                        <StackPanel>
+                            <Button Content="Color"  Style="{StaticResource ButtonStyle}" Click="Color_Click" />
+                            <Button Content="Depth"  Style="{StaticResource ButtonStyle}" Click="Depth_Click" />
+                            <Button Content="Infrared"   Style="{StaticResource ButtonStyle}" Click="Infrared_Click" />
+                        </StackPanel>
+                    </Border>-->
+                </Grid>
+            </TabItem>
+            <TabItem Header="Body Tracker">
+                <Border HorizontalAlignment="Left"  Grid.Column="0" Grid.Row="0" VerticalAlignment="Top" BorderBrush="DarkCyan" BorderThickness="1">
+                    <Grid  Background="#FFF2F2F2" VerticalAlignment="Stretch">
+                       <Image Name="bodyCamera"  Stretch="Fill" />
+                        <Canvas Name="canvas"/>
+                    </Grid>
+                </Border>
+            </TabItem>
+            <TabItem Header="Blob Detection">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="4*" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" /> 
+                    </Grid.RowDefinitions>
+                    <Border HorizontalAlignment="Left"  Grid.Column="0" Grid.Row="0" VerticalAlignment="Top" BorderBrush="DarkCyan" BorderThickness="1">
+                        <Grid  Background="#FFF2F2F2" VerticalAlignment="Stretch">
+                            <Image Name="blobCamera" Stretch="Fill" />
+                        </Grid>
+                    </Border>
+                    <Border Grid.Column="1" Grid.Row="0"  VerticalAlignment="Stretch" Opacity=".7"  BorderBrush="DarkCyan" BorderThickness="1">
+                        <Grid Margin="10">
+                            <StackPanel Margin="0">
+                                <TextBlock Text="Depth" FontSize="14"/>
+                                <TextBox x:Name="blobZ" IsReadOnly="true" FontSize="20" Text="{Binding Path=BlobZ, UpdateSourceTrigger=PropertyChanged}"/>
+                            </StackPanel>
+                            <StackPanel  Margin="0,60">
+                                <TextBlock Text="BlobX" FontSize="14"/>
+                                <TextBox x:Name="blobX" IsReadOnly="true" FontSize="20" Text="{Binding Path=BlobX, UpdateSourceTrigger=PropertyChanged}"/>
+                            </StackPanel>
+
+                            <StackPanel  Margin="0,120">
+                                <TextBlock Text="BlobY" FontSize="14"/>
+                                <TextBox x:Name="blobY" IsReadOnly="true" FontSize="20" Text="{Binding Path=BlobY, UpdateSourceTrigger=PropertyChanged}"/>
+                            </StackPanel>
+
+                            <DockPanel Margin="0,180">
+                                <Label DockPanel.Dock="Top" FontWeight="Bold">Blob Treshold:</Label>
+                                <TextBox Text="{Binding ElementName=blobTreshold, Path=Value, UpdateSourceTrigger=PropertyChanged}" DockPanel.Dock="Top"  Height="20" TextAlignment="Right" Width="40" />
+                                <Slider Minimum="120" Maximum="300" TickPlacement="BottomRight" TickFrequency="5" IsSnapToTickEnabled="True" Name="blobTreshold" ValueChanged="BlobSlider_ValueChanged" />
+                            </DockPanel>
+
+                            <Grid  Margin="0,260,0,180">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="3*" />
+                                    <ColumnDefinition Width="1*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                
+                                <Label FontWeight="Bold" Grid.Row="0" Grid.Column="0"  >Detected Blobs:</Label>
+                                <TextBox IsReadOnly="True" Grid.Row="0" Grid.Column="1" VerticalAlignment="Top" Text="{Binding Path=BlobsCount, UpdateSourceTrigger=PropertyChanged}"    Height="20" />
+ 
+                            </Grid>
+
+                        </Grid>
+                    </Border> 
+                </Grid>
+            </TabItem>
+    
+        </TabControl>
+    </Grid>
+</Window>
